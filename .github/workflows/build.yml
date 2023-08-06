@@ -1,9 +1,10 @@
 name: Build Docker Image
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - "master"
+      - "latest"
 
 env:
   REGISTRY_IMAGE: malacay1462/php-environment
