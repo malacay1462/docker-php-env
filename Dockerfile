@@ -4,18 +4,6 @@ USER root
 
 # Fix debconf warnings upon build
 ARG DEBIAN_FRONTEND=noninteractive
-ARG USERNAME=nonRoot
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-
-# Create Non root user
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && apt-get update \
-    && apt-get install -y sudo \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
-
 
 ARG USERNAME_SAIL=sail
 ARG USER_UID_SAIL=1001
@@ -26,28 +14,8 @@ RUN useradd --uid $USER_UID_SAIL --gid $USER_GID_SAIL -m $USERNAME_SAIL \
     && echo $USERNAME_SAIL ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME_SAIL \
     && chmod 0440 /etc/sudoers.d/$USERNAME_SAIL
     
-USER $USERNAME
-
-# Fig
-#FIG_LOGIN_TOKEN= \
-#RUN export INTEGRATIONS="dotfiles ssh"; \
-#    curl -fSsL https://repo.fig.io/scripts/install-headless.sh | /bin/bash || true
-#RUN export INTEGRATIONS="daemon"; \
-#    curl -fSsL https://repo.fig.io/scripts/install-headless.sh | /bin/bash || true
-    
-USER root
-
-#RUN export INTEGRATIONS="dotfiles ssh"; \
-#    curl -fSsL https://repo.fig.io/scripts/install-headless.sh | /bin/bash || true
-#RUN export INTEGRATIONS="daemon"; \
-#    curl -fSsL https://repo.fig.io/scripts/install-headless.sh | /bin/bash || true
-
 # Node Repo
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-
-#RUN add-apt-repository universe \
-#    && add-apt-repository multiverse \
-#    && add-apt-repository restricted
 
 # Install selected extensions and other stuff
 RUN apt-get update; \
@@ -144,11 +112,6 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-# Pecl Redis
-#RUN pecl install -o -f redis \
-#    &&  rm -rf /tmp/pear \
-#    &&  docker-php-ext-enable redis
-
 # Install Cron & Supervisor
 RUN apt-get update \
     && apt-get -y install \
@@ -167,8 +130,7 @@ RUN apt-get update \
     && sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
     && git config --global --add oh-my-zsh.hide-dirty 1
 
-# Docker & Podman
-#RUN for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
+# Docker
 RUN apt-get update; \
     install -m 0755 -d /etc/apt/keyrings; \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg; \
@@ -183,8 +145,7 @@ RUN apt-get update; \
         docker-ce-cli \
         containerd.io \
         docker-buildx-plugin \
-        docker-compose-plugin \
-        podman; \
+        docker-compose-plugin; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
