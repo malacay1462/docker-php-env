@@ -1,1 +1,1 @@
-Custom Docker Environment for PHP-Development
+php-environment

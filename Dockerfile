@@ -1,4 +1,4 @@
-FROM phpdockerio/php:8.2-fpm
+FROM phpdockerio/php:8.3-fpm
 
 USER root
 
@@ -96,51 +96,50 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-# php8.2-http php8.2-fileinfo php8.2-gd php8.2-gmagick php8.2-common php8.2-psr
+# php8.3-http php8.3-fileinfo php8.3-gd php8.3-gmagick php8.3-common php8.3-psr php8.3-mcrypt
 RUN apt-get update; \
     apt-get -y --no-install-recommends install \
-        php8.2-amqp \
-        php8.2-ast \
-        php8.2-bcmath \
-        php8.2-bz2 \
-        php8.2-gmp \
-        php8.2-grpc \
-        php8.2-imagick \
-        php8.2-imap \
-        php8.2-inotify \
-        php8.2-interbase \
-        php8.2-intl \
-        php8.2-ldap \
-        php8.2-mailparse \
-        php8.2-maxminddb \
-        php8.2-mcrypt \
-        php8.2-memcache \
-        php8.2-memcached \
-        php8.2-mysql \
-        php8.2-oauth \
-        php8.2-odbc \
-        php8.2-pcov \
-        php8.2-pgsql \
-        php8.2-pspell \
-        php8.2-redis \
-        php8.2-soap \
-        php8.2-sqlite3 \
-        php8.2-ssh2 \
-        php8.2-swoole \
-        php8.2-tidy \
-        php8.2-uuid \
-        php8.2-vips \
-        php8.2-xdebug \
-        php8.2-xmlrpc \
-        php8.2-apcu \
-        php8.2-cli \
-        php8.2-curl \
-        php8.2-mbstring \
-        php8.2-opcache \
-        php8.2-readline \
-        php8.2-xml \
-        php8.2-zip \
-        php8.2-yaml; \
+        php8.3-amqp \
+        php8.3-ast \
+        php8.3-bcmath \
+        php8.3-bz2 \
+        php8.3-gmp \
+        php8.3-grpc \
+        php8.3-imagick \
+        php8.3-imap \
+        php8.3-inotify \
+        php8.3-interbase \
+        php8.3-intl \
+        php8.3-ldap \
+        php8.3-mailparse \
+        php8.3-maxminddb \
+        php8.3-memcache \
+        php8.3-memcached \
+        php8.3-mysql \
+        php8.3-oauth \
+        php8.3-odbc \
+        php8.3-pcov \
+        php8.3-pgsql \
+        php8.3-pspell \
+        php8.3-redis \
+        php8.3-soap \
+        php8.3-sqlite3 \
+        php8.3-ssh2 \
+        php8.3-swoole \
+        php8.3-tidy \
+        php8.3-uuid \
+        php8.3-vips \
+        php8.3-xdebug \
+        php8.3-xmlrpc \
+        php8.3-apcu \
+        php8.3-cli \
+        php8.3-curl \
+        php8.3-mbstring \
+        php8.3-opcache \
+        php8.3-readline \
+        php8.3-xml \
+        php8.3-zip \
+        php8.3-yaml; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
@@ -218,7 +217,7 @@ RUN (umask 077 && test -d ~/.ssh || mkdir ~/.ssh) \
     && (umask 077 && touch ~/.ssh/authorized_keys)
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["/usr/sbin/php-fpm8.2", "-O" ]
+CMD ["/usr/sbin/php-fpm8.3", "-O" ]
 
 ## SSH Port
 EXPOSE 22
