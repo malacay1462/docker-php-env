@@ -7,9 +7,6 @@ on:
           description: 'Version zum Publish'     
           required: true
 
-env:
-    REGISTRY_IMAGE: malacay1462/php-environment
-
 jobs:
     publish:
         runs-on: ubuntu-latest
@@ -21,7 +18,7 @@ jobs:
             id: meta
             uses: docker/metadata-action@v4
             with:
-              images: ${{ env.REGISTRY_IMAGE }}
+              images: malacay1462/php-environment
     
           - name: Set up QEMU
             uses: docker/setup-qemu-action@v2
@@ -37,6 +34,7 @@ jobs:
           
           - name: Publish to Docker Hub
             run: |
+                docker pull malacay1462/php-environment:latest
                 docker image tag malacay1462/php-environment:latest malacay1462/php-environment:${{ github.event.inputs.version }}
                 docker image push malacay1462/php-environment:${{ github.event.inputs.version }}
                 docker buildx imagetools create -t malacay1462/php-environment:${{ github.event.inputs.version }} malacay1462/php-environment:latest
