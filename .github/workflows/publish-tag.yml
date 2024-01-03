@@ -8,7 +8,7 @@ on:
           required: true
 
 env:
-REGISTRY_IMAGE: malacay1462/php-environment
+    REGISTRY_IMAGE: malacay1462/php-environment
 
 jobs:
     publish:
