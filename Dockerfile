@@ -96,6 +96,14 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
+RUN apt-get update; \
+    apt-get -y --no-install-recommends install \
+       pdo_mysql \
+       php-pdo \
+       php-mysqli; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
 # php8.3-http php8.3-fileinfo php8.3-gd php8.3-gmagick php8.3-common php8.3-psr php8.3-mcrypt
 RUN apt-get update; \
     apt-get -y --no-install-recommends install \
@@ -143,6 +151,13 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
+RUN apt-get update; \
+    apt-get -y --no-install-recommends install \
+       php8.3-pdo \
+       php8.3-mysqli; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+    
 # Pecl Redis
 #RUN pecl install -o -f redis \
 #    &&  rm -rf /tmp/pear \
