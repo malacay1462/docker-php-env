@@ -16,7 +16,6 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
-
 ARG USERNAME_SAIL=sail
 ARG USER_UID_SAIL=1001
 ARG USER_GID_SAIL=0
@@ -26,30 +25,8 @@ RUN useradd --uid $USER_UID_SAIL --gid $USER_GID_SAIL -m $USERNAME_SAIL \
     && echo $USERNAME_SAIL ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME_SAIL \
     && chmod 0440 /etc/sudoers.d/$USERNAME_SAIL
     
-USER $USERNAME
-
-# Fig
-#FIG_LOGIN_TOKEN= \
-#RUN export INTEGRATIONS="dotfiles ssh"; \
-#    curl -fSsL https://repo.fig.io/scripts/install-headless.sh | /bin/bash || true
-#RUN export INTEGRATIONS="daemon"; \
-#    curl -fSsL https://repo.fig.io/scripts/install-headless.sh | /bin/bash || true
-    
 USER root
 
-#RUN export INTEGRATIONS="dotfiles ssh"; \
-#    curl -fSsL https://repo.fig.io/scripts/install-headless.sh | /bin/bash || true
-#RUN export INTEGRATIONS="daemon"; \
-#    curl -fSsL https://repo.fig.io/scripts/install-headless.sh | /bin/bash || true
-
-# Node Repo
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-
-#RUN add-apt-repository universe \
-#    && add-apt-repository multiverse \
-#    && add-apt-repository restricted
-
-# Install selected extensions and other stuff
 RUN apt-get update; \
     apt-get -y --no-install-recommends install \
     jpegoptim \
@@ -79,7 +56,6 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-# php-json
 RUN apt-get update; \
     apt-get -y --no-install-recommends install \
        php-ssh2 \
@@ -96,15 +72,7 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-RUN apt-get update; \
-    apt-get -y --no-install-recommends install \
-       pdo_mysql \
-       php-pdo \
-       php-mysqli; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
-
-# php8.3-http php8.3-fileinfo php8.3-gd php8.3-gmagick php8.3-common php8.3-psr php8.3-mcrypt
+# php8.3-http php8.3-maxminddb php8.3-mcrypt php8.3-msgpack php8.3-phpdbg php8.3-gmagick php8.3-gd php8.3-decimal
 RUN apt-get update; \
     apt-get -y --no-install-recommends install \
         php8.3-amqp \
@@ -151,18 +119,6 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-RUN apt-get update; \
-    apt-get -y --no-install-recommends install \
-       php8.3-pdo \
-       php8.3-mysqli; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
-    
-# Pecl Redis
-#RUN pecl install -o -f redis \
-#    &&  rm -rf /tmp/pear \
-#    &&  docker-php-ext-enable redis
-
 # Install Cron & Supervisor
 RUN apt-get update \
     && apt-get -y install \
@@ -201,9 +157,6 @@ RUN apt-get update; \
         podman; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
-
-# Globals NPM
-RUN npm install -g @vue/cli @vue/cli-service-global svgo @maizzle/cli
 
 # Composer
 RUN composer self-update --2
