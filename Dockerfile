@@ -48,6 +48,7 @@ RUN apt-get update; \
     vim \
     htop \
     graphviz \
+    mysql-client \
     aspell \
     aspell-de \
     build-essential \
@@ -55,7 +56,7 @@ RUN apt-get update; \
     unzip ; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
-
+    
 RUN apt-get update; \
     apt-get -y --no-install-recommends install \
        php-ssh2 \
