@@ -1,4 +1,4 @@
-FROM phpdockerio/php:8.3-fpm
+FROM phpdockerio/php:8.4-fpm
 
 USER root
 
@@ -9,12 +9,12 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 # Create Non root user
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+RUN (getent group $USER_GID >/dev/null 2>&1 || groupadd --gid $USER_GID $USERNAME) \
+    && (id -u $USER_UID >/dev/null 2>&1 && echo "User with UID $USER_UID already exists" || useradd --uid $USER_UID --gid $USER_GID -m $USERNAME) \
     && apt-get update \
     && apt-get install -y sudo \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+    && (test -f /etc/sudoers.d/$USERNAME || echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME) \
+    && chmod 0440 /etc/sudoers.d/$USERNAME 2>/dev/null || true
 
 ARG USERNAME_SAIL=sail
 ARG USER_UID_SAIL=1001
@@ -73,52 +73,58 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-# php8.3-http php8.3-maxminddb php8.3-mcrypt php8.3-msgpack php8.3-phpdbg php8.3-gmagick php8.3-gd php8.3-decimal
+# php8.4-http php8.4-maxminddb php8.4-mcrypt php8.4-msgpack php8.4-phpdbg php8.4-gmagick php8.4-gd php8.4-decimal
 RUN apt-get update; \
     apt-get -y --no-install-recommends install \
-        php8.3-amqp \
-        php8.3-ast \
-        php8.3-bcmath \
-        php8.3-bz2 \
-        php8.3-gmp \
-        php8.3-grpc \
-        php8.3-imagick \
-        php8.3-imap \
-        php8.3-inotify \
-        php8.3-interbase \
-        php8.3-intl \
-        php8.3-ldap \
-        php8.3-mailparse \
-        php8.3-maxminddb \
-        php8.3-memcache \
-        php8.3-memcached \
-        php8.3-mysql \
-        php8.3-oauth \
-        php8.3-odbc \
-        php8.3-pcov \
-        php8.3-pgsql \
-        php8.3-pspell \
-        php8.3-redis \
-        php8.3-soap \
-        php8.3-sqlite3 \
-        php8.3-ssh2 \
-        php8.3-swoole \
-        php8.3-tidy \
-        php8.3-uuid \
-        php8.3-vips \
-        php8.3-xdebug \
-        php8.3-xmlrpc \
-        php8.3-apcu \
-        php8.3-cli \
-        php8.3-curl \
-        php8.3-mbstring \
-        php8.3-opcache \
-        php8.3-readline \
-        php8.3-xml \
-        php8.3-zip \
-        php8.3-yaml; \
+        php8.4-amqp \
+        php8.4-ast \
+        php8.4-bcmath \
+        php8.4-bz2 \
+        php8.4-gmp \
+        php8.4-grpc \
+        php8.4-imagick \
+        php8.4-imap \
+        php8.4-interbase \
+        php8.4-intl \
+        php8.4-ldap \
+        php8.4-mailparse \
+        php8.4-maxminddb \
+        php8.4-memcache \
+        php8.4-memcached \
+        php8.4-mysql \
+        php8.4-oauth \
+        php8.4-odbc \
+        php8.4-pcov \
+        php8.4-pgsql \
+        php8.4-pspell \
+        php8.4-redis \
+        php8.4-soap \
+        php8.4-sqlite3 \
+        php8.4-ssh2 \
+        php8.4-swoole \
+        php8.4-tidy \
+        php8.4-uuid \
+        php8.4-vips \
+        php8.4-xdebug \
+        php8.4-xmlrpc \
+        php8.4-apcu \
+        php8.4-cli \
+        php8.4-curl \
+        php8.4-mbstring \
+        php8.4-opcache \
+        php8.4-readline \
+        php8.4-xml \
+        php8.4-zip \
+        php8.4-yaml; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+# Install inotify via PECL
+RUN apt-get update && apt-get install -y php8.4-dev && \
+    pecl install inotify && \
+    echo "extension=inotify.so" > /etc/php/8.4/mods-available/inotify.ini && \
+    phpenmod inotify && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Cron & Supervisor
 RUN apt-get update \
@@ -159,6 +165,7 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
+
 # Composer
 RUN composer self-update --2
 
@@ -171,7 +178,7 @@ COPY "sshd_config" "/etc/ssh/sshd_config"
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
-ENV NOTVISIBLE "in users profile"
+ENV NOTVISIBLE="in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 RUN mkdir -p /etc/supervisor/custom.conf.d
@@ -186,7 +193,7 @@ RUN (umask 077 && test -d ~/.ssh || mkdir ~/.ssh) \
     && (umask 077 && touch ~/.ssh/authorized_keys)
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["/usr/sbin/php-fpm8.3", "-O" ]
+CMD ["/usr/sbin/php-fpm8.4", "-O" ]
 
 ## SSH Port
 EXPOSE 22
