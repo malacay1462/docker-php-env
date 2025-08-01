@@ -36,7 +36,6 @@ RUN apt-get update; \
     webp \
     ncdu \
     git \
-    nodejs \
     ca-certificates \
     curl \
     apt-transport-https \
@@ -48,6 +47,7 @@ RUN apt-get update; \
     vim \
     htop \
     graphviz \
+    imagemagick \
     mysql-client \
     aspell \
     aspell-de \
@@ -64,12 +64,9 @@ RUN apt-get update; \
        php-memcached \
        php-intl \
        php-imagick \
-       php-ssh2 \
-       php-yaml \
        php-redis \
        php-xdebug \
-       php-mysql \
-       php-pear; \
+       php-mysql; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
@@ -165,6 +162,22 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
+
+# Node.js with NVM (Node Version Manager)
+ENV NVM_DIR="/root/.nvm"
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash \
+    && . "$NVM_DIR/nvm.sh" \
+    && nvm install --lts \
+    && nvm use --lts \
+    && nvm alias default lts/* \
+    && npm install -g npm@latest \
+    && npm install -g @vue/cli \
+    && npm install -g vite
+
+# Make NVM and Node available in all shells
+RUN echo 'export NVM_DIR="/root/.nvm"' >> /root/.bashrc \
+    && echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /root/.bashrc \
+    && echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> /root/.bashrc
 
 # Composer
 RUN composer self-update --2
