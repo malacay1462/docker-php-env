@@ -1,40 +1,40 @@
 name: Publish Tag
 
-on: 
-    workflow_dispatch:
-      inputs:
-        version:
-          description: 'Version zum Publish'     
-          required: true
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version zum Publish'
+        required: true
 
 jobs:
-    publish:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v3
-    
-          - name: Docker meta
-            id: meta
-            uses: docker/metadata-action@v4
-            with:
-              images: malacay1462/php-environment
-    
-          - name: Set up QEMU
-            uses: docker/setup-qemu-action@v2
-    
-          - name: Set up Docker Buildx
-            uses: docker/setup-buildx-action@v2
-    
-          - name: Login to Docker Hub
-            uses: docker/login-action@v2
-            with:
-              username: ${{ secrets.DOCKERHUB_USERNAME }}
-              password: ${{ secrets.DOCKERHUB_TOKEN }}
-          
-          - name: Publish to Docker Hub
-            run: |
-                docker pull malacay1462/php-environment:latest
-                docker image tag malacay1462/php-environment:latest malacay1462/php-environment:${{ github.event.inputs.version }}
-                docker image push malacay1462/php-environment:${{ github.event.inputs.version }}
-                docker buildx imagetools create -t malacay1462/php-environment:${{ github.event.inputs.version }} malacay1462/php-environment:latest
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: malacay1462/php-environment
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Publish to Docker Hub
+        run: |
+          docker pull malacay1462/php-environment:latest
+          docker image tag malacay1462/php-environment:latest malacay1462/php-environment:${{ github.event.inputs.version }}
+          docker image push malacay1462/php-environment:${{ github.event.inputs.version }}
+          docker buildx imagetools create -t malacay1462/php-environment:${{ github.event.inputs.version }} malacay1462/php-environment:latest

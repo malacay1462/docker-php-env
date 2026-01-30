@@ -1,0 +1,8 @@
+# Build logs
+github-build-logs/
+
+# Claude Code
+.claude/
+
+# macOS
+.DS_Store
