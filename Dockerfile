@@ -76,10 +76,11 @@ RUN apt-get update; \
 RUN composer self-update --2
 
 # SSH
+ARG SSH_ROOT_PASSWORD
 RUN apt-get update && apt-get install -y openssh-server ssh \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /var/run/sshd
-RUN echo 'root:test1234' | chpasswd
+RUN echo "root:${SSH_ROOT_PASSWORD}" | chpasswd
 COPY "sshd_config" "/etc/ssh/sshd_config"
 
 # SSH login fix. Otherwise user is kicked off after login

@@ -6,12 +6,20 @@ on:
     branches:
       - "latest"
 
+# Verhindert parallele Builds - neuer Push cancelt alten Build
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   REGISTRY_IMAGE: malacay1462/php-environment
 
 jobs:
   build:
     runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -19,9 +27,7 @@ jobs:
           - platform: linux/amd64
             runner: ubuntu-24.04
           - platform: linux/arm64
-            # Für public repos: ubuntu-24.04-arm (native, schnell)
-            # Für private repos: ubuntu-24.04 + QEMU (emuliert, langsam)
-            runner: ubuntu-24.04
+            runner: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,9 +37,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY_IMAGE }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+          tags: |
+            type=raw,value=latest
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -51,6 +56,8 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            SSH_ROOT_PASSWORD=${{ secrets.SSH_ROOT_PASSWORD }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
@@ -69,8 +76,11 @@ jobs:
 
   merge:
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
     needs:
       - build
+    permissions:
+      contents: read
     steps:
       - name: Download digests
         uses: actions/download-artifact@v4
@@ -87,6 +97,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY_IMAGE }}
+          tags: |
+            type=raw,value=latest
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
