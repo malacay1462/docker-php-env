@@ -1,4 +1,4 @@
-FROM phpdockerio/php:8.4-fpm
+FROM phpdockerio/php:8.5-fpm
 
 USER root
 
@@ -70,56 +70,56 @@ RUN apt-get update; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-# php8.4-http php8.4-maxminddb php8.4-mcrypt php8.4-msgpack php8.4-phpdbg php8.4-gmagick php8.4-gd php8.4-decimal
+# php8.5-http php8.5-maxminddb php8.5-mcrypt php8.5-msgpack php8.5-phpdbg php8.5-gmagick php8.5-gd php8.5-decimal
 RUN apt-get update; \
     apt-get -y --no-install-recommends install \
-        php8.4-amqp \
-        php8.4-ast \
-        php8.4-bcmath \
-        php8.4-bz2 \
-        php8.4-gmp \
-        php8.4-grpc \
-        php8.4-imagick \
-        php8.4-imap \
-        php8.4-interbase \
-        php8.4-intl \
-        php8.4-ldap \
-        php8.4-mailparse \
-        php8.4-maxminddb \
-        php8.4-memcache \
-        php8.4-memcached \
-        php8.4-mysql \
-        php8.4-oauth \
-        php8.4-odbc \
-        php8.4-pcov \
-        php8.4-pgsql \
-        php8.4-pspell \
-        php8.4-redis \
-        php8.4-soap \
-        php8.4-sqlite3 \
-        php8.4-ssh2 \
-        php8.4-swoole \
-        php8.4-tidy \
-        php8.4-uuid \
-        php8.4-vips \
-        php8.4-xdebug \
-        php8.4-xmlrpc \
-        php8.4-apcu \
-        php8.4-cli \
-        php8.4-curl \
-        php8.4-mbstring \
-        php8.4-opcache \
-        php8.4-readline \
-        php8.4-xml \
-        php8.4-zip \
-        php8.4-yaml; \
+        php8.5-amqp \
+        php8.5-ast \
+        php8.5-bcmath \
+        php8.5-bz2 \
+        php8.5-gmp \
+        php8.5-grpc \
+        php8.5-imagick \
+        php8.5-imap \
+        php8.5-interbase \
+        php8.5-intl \
+        php8.5-ldap \
+        php8.5-mailparse \
+        php8.5-maxminddb \
+        php8.5-memcache \
+        php8.5-memcached \
+        php8.5-mysql \
+        php8.5-oauth \
+        php8.5-odbc \
+        php8.5-pcov \
+        php8.5-pgsql \
+        php8.5-pspell \
+        php8.5-redis \
+        php8.5-soap \
+        php8.5-sqlite3 \
+        php8.5-ssh2 \
+        php8.5-swoole \
+        php8.5-tidy \
+        php8.5-uuid \
+        php8.5-vips \
+        php8.5-xdebug \
+        php8.5-xmlrpc \
+        php8.5-apcu \
+        php8.5-cli \
+        php8.5-curl \
+        php8.5-mbstring \
+        php8.5-opcache \
+        php8.5-readline \
+        php8.5-xml \
+        php8.5-zip \
+        php8.5-yaml; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # Install inotify via PECL
-RUN apt-get update && apt-get install -y php8.4-dev && \
+RUN apt-get update && apt-get install -y php8.5-dev && \
     pecl install inotify && \
-    echo "extension=inotify.so" > /etc/php/8.4/mods-available/inotify.ini && \
+    echo "extension=inotify.so" > /etc/php/8.5/mods-available/inotify.ini && \
     phpenmod inotify && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -206,7 +206,7 @@ RUN (umask 077 && test -d ~/.ssh || mkdir ~/.ssh) \
     && (umask 077 && touch ~/.ssh/authorized_keys)
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["/usr/sbin/php-fpm8.4", "-O" ]
+CMD ["/usr/sbin/php-fpm8.5", "-O" ]
 
 ## SSH Port
 EXPOSE 22
