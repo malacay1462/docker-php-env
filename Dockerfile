@@ -55,6 +55,7 @@ RUN apt-get update; \
         php8.5-pspell \
         php8.5-redis \
         php8.5-sqlite3 \
+        php8.5-pdo-sqlite \
         php8.5-tidy \
         php8.5-uuid \
         php8.5-vips \
