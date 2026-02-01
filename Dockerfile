@@ -41,6 +41,9 @@ RUN apt-get update; \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # PHP Extensions
+# Note: opcache is now built into PHP 8.5 core (no separate package needed)
+# Note: pcntl is built into PHP core
+# Note: memcache package doesn't exist for 8.5, only memcached
 RUN apt-get update; \
     apt-get -y --no-install-recommends install \
         php8.5-bcmath \
@@ -48,14 +51,14 @@ RUN apt-get update; \
         php8.5-imagick \
         php8.5-intl \
         php8.5-maxminddb \
-        php8.5-memcache \
+        # php8.5-memcache \
         php8.5-memcached \
         php8.5-mysql \
         php8.5-pcov \
         php8.5-pspell \
         php8.5-redis \
         php8.5-sqlite3 \
-        php8.5-pdo-sqlite \
+        # php8.5-pdo-sqlite \
         php8.5-tidy \
         php8.5-uuid \
         php8.5-vips \
@@ -64,8 +67,8 @@ RUN apt-get update; \
         php8.5-cli \
         php8.5-curl \
         php8.5-mbstring \
-        php8.5-opcache \
-        php8.5-pcntl \
+        # php8.5-opcache \
+        # php8.5-pcntl \
         php8.5-readline \
         php8.5-xml \
         php8.5-zip \
