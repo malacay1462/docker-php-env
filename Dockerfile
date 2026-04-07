@@ -48,6 +48,7 @@ RUN apt-get update; \
     apt-get -y --no-install-recommends install \
         php8.5-bcmath \
         php8.5-bz2 \
+        php8.5-gd \
         php8.5-imagick \
         php8.5-intl \
         php8.5-maxminddb \
